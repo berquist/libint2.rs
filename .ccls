@@ -1,0 +1,3 @@
+clang
+-I/usr/include/libint2
+-I./include

@@ -4,8 +4,20 @@ mod ffi {
         include!("libint2/include/wrapper.h");
         fn libint2_init();
         fn libint2_finalize();
-        // fn create_simple_primitive_shell(alpha: f64, am: i64, px: f64, py: f64, pz: f64) -> Shell;
-        fn do_thing();
+        fn libint2_test_c_api(
+            am1: i32,
+            am2: i32,
+            am3: i32,
+            am4: i32,
+            alpha1: f64,
+            alpha2: f64,
+            alpha3: f64,
+            alpha4: f64,
+            A: &Vec<f64>,
+            B: &Vec<f64>,
+            C: &Vec<f64>,
+            D: &Vec<f64>,
+        );
     }
 }
 
@@ -15,7 +27,9 @@ mod tests {
     // use std::cmp;
 
     #[test]
-    fn it_works() {
+    fn test_c_api() {
+        //! A partial translation of the test at
+        //! https://github.com/evaleev/libint/blob/3bf3a07b58650fe2ed4cd3dc6517d741562e1249/tests/unit/test-c-api.cc#L23.
         ffi::libint2_init();
         let am1 = 1;
         let am2 = 1;
@@ -25,13 +39,13 @@ mod tests {
         let alpha2 = 2.3;
         let alpha3 = 3.4;
         let alpha4 = 4.8;
-        let A = [0.0, 1.0, 2.0];
-        let B = [1.0, 2.0, 0.0];
-        let C = [2.0, 0.0, 1.0];
-        let D = [0.0, 1.0, 2.0];
-        // let max_am = cmp::max(cmp::max(am1, am2), cmp::max(am3, am4));
-        // let mut erieval
-        ffi::do_thing();
+        let A = vec![0.0, 1.0, 2.0];
+        let B = vec![1.0, 2.0, 0.0];
+        let C = vec![2.0, 0.0, 1.0];
+        let D = vec![0.0, 1.0, 2.0];
+        ffi::libint2_test_c_api(
+            am1, am2, am3, am4, alpha1, alpha2, alpha3, alpha4, &A, &B, &C, &D,
+        );
         ffi::libint2_finalize();
     }
 }
