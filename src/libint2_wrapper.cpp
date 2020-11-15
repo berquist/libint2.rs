@@ -1,6 +1,8 @@
 // #include <catch2/catch.hpp>
-#include <libint2/boys.h>
-#include "libint2/include/wrapper.h"
+#include <libint2/engine.h>
+#include "libint2/include/libint2_c.h"
+#include "libint2/include/libint2_wrapper.hpp"
+#include "libint2/src/lib.rs.h"
 
 void libint2_init()
 {
@@ -11,6 +13,42 @@ void libint2_finalize()
 {
     libint2::finalize();
 }
+
+libint2::Operator convert_operator_rust_to_cxx(LibintOperator operator_rust) {
+    libint2::Operator op;
+    // TODO implement all
+    switch(operator_rust) {
+    case LibintOperator::Overlap:
+        op = libint2::Operator::overlap;
+        break;
+    case LibintOperator::Kinetic:
+        op = libint2::Operator::kinetic;
+        break;
+    case LibintOperator::Nuclear:
+        op = libint2::Operator::nuclear;
+        break;
+    case LibintOperator::Coulomb:
+        op = libint2::Operator::coulomb;
+        break;
+    default:
+        throw "operator not implemented";
+    }
+    return op;
+}
+
+// libint2::Contraction convert_contraction_rust_to_cxx(LibintContraction &contraction_rust) {
+//     std::vector<double> coeff;
+//     for (auto& it : contraction_rust.coeff) {
+//         coeff.push_back(it);
+//     }
+//     return Contraction(contraction_rust.l, contraction_rust.pure);
+// }
+
+// libint2::Shell convert_shell_rust_to_cxx(LibintShell &shell_rust) {
+//     std::vector<double> alpha;
+//     std::array<double, 3> origin;
+//     // return libint2::Shell
+// }
 
 Libint_t erieval;
 double* F;
@@ -27,10 +65,6 @@ void init_c_api(unsigned int max_am) {
 void finalize_c_api() {
     free(F);
     libint2_cleanup_eri(&erieval);
-}
-
-extern "C" void calc_f(double* F, double T, unsigned int max_m) {
-    libint2::FmEval_Chebyshev7<double>::instance(max_m)->eval(F, T, max_m);
 }
 
 /** This function evaluates ERI over 4 primitive Gaussian shells.
@@ -54,7 +88,6 @@ _compute_eri(Libint_t* erieval,
     double gammapq, PQx, PQy, PQz, PQ2, Wx, Wy, Wz;
     double K1, K2, pfac;
     unsigned int am;
-    double* eri_shell_set;
 
     /*
       Compute requisite data -- many of these quantities would be precomputed
@@ -155,6 +188,8 @@ compute_eri(unsigned int am1, double alpha1, const double* A,
   return erieval.targets[0];
 }
 
+
+
 void libint2_test_c_api(int am1, int am2, int am3, int am4, double alpha1, double alpha2, double alpha3, double alpha4, const rust::Vec<double> &A, const rust::Vec<double> &B, const rust::Vec<double> &C, const rust::Vec<double> &D) {
     using std::max;
     auto max_am = max(max(am1,am2),max(am3,am4));
@@ -190,6 +225,12 @@ void libint2_test_c_api(int am1, int am2, int am3, int am4, double alpha1, doubl
             }
         }
     }
+
+    std::cout << "n1: " << n1 << std::endl;
+    std::cout << "n2: " << n2 << std::endl;
+    std::cout << "n3: " << n3 << std::endl;
+    std::cout << "n4: " << n4 << std::endl;
+    std::cout << "abcd: " << abcd << std::endl;
 
     finalize_c_api();
 }

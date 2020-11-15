@@ -1,5 +1,3 @@
-#include <vector>
-#include <libint2.hpp>
 #include "cxx.h"
 
 void libint2_init();

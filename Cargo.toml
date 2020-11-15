@@ -9,6 +9,6 @@ build = "build.rs"
 cxx = "*"
 
 [build-dependencies]
-# bindgen = "*"
+bindgen = "0.55"
 # cmake = "*"
 cxx-build = "*"
