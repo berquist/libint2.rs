@@ -2,7 +2,6 @@
 #include <libint2/engine.h>
 #include "libint2/include/libint2_c.h"
 #include "libint2/include/libint2_wrapper.hpp"
-#include "libint2/src/lib.rs.h"
 
 void libint2_init()
 {
@@ -16,7 +15,6 @@ void libint2_finalize()
 
 libint2::Operator convert_operator_rust_to_cxx(LibintOperator operator_rust) {
     libint2::Operator op;
-    // TODO implement all
     switch(operator_rust) {
     case LibintOperator::Overlap:
         op = libint2::Operator::overlap;
@@ -27,8 +25,53 @@ libint2::Operator convert_operator_rust_to_cxx(LibintOperator operator_rust) {
     case LibintOperator::Nuclear:
         op = libint2::Operator::nuclear;
         break;
+    case LibintOperator::ErfNuclear:
+        op = libint2::Operator::erf_nuclear;
+        break;
+    case LibintOperator::ErfcNuclear:
+        op = libint2::Operator::erfc_nuclear;
+        break;
+    case LibintOperator::EMultipole1:
+        op = libint2::Operator::emultipole1;
+        break;
+    case LibintOperator::EMultipole2:
+        op = libint2::Operator::emultipole2;
+        break;
+    case LibintOperator::EMultipole3:
+        op = libint2::Operator::emultipole3;
+        break;
+    case LibintOperator::SphEMultipole:
+        op = libint2::Operator::sphemultipole;
+        break;
+    case LibintOperator::Delta:
+        op = libint2::Operator::delta;
+        break;
     case LibintOperator::Coulomb:
         op = libint2::Operator::coulomb;
+        break;
+    case LibintOperator::Cgtg:
+        op = libint2::Operator::cgtg;
+        break;
+    case LibintOperator::CgtgTimesCoulomb:
+        op = libint2::Operator::cgtg_x_coulomb;
+        break;
+    case LibintOperator::DelCgtgSquared:
+        op = libint2::Operator::delcgtg2;
+        break;
+    case LibintOperator::R12:
+        op = libint2::Operator::r12;
+        break;
+    case LibintOperator::ErfCoulomb:
+        op = libint2::Operator::erf_coulomb;
+        break;
+    case LibintOperator::ErfcCoulomb:
+        op = libint2::Operator::erfc_coulomb;
+        break;
+    case LibintOperator::Stg:
+        op = libint2::Operator::stg;
+        break;
+    case LibintOperator::StgTimesCoulomb:
+        op = libint2::Operator::stg_x_coulomb;
         break;
     default:
         throw "operator not implemented";
@@ -234,3 +277,22 @@ void libint2_test_c_api(int am1, int am2, int am3, int am4, double alpha1, doubl
 
     finalize_c_api();
 }
+
+double libint2_calc_boys_reference_single(double T, unsigned int m) {
+    const auto instance = libint2::FmEval_Reference<double>();
+    return instance.eval(T, m);
+}
+
+std::vector<double> libint2_calc_boys_chebyshev7(double T, unsigned int max_m) {
+    std::vector<double> ret(max_m + 1);
+    const auto instance = libint2::FmEval_Chebyshev7<double>::instance(max_m);
+    instance->eval(ret.data(), T, max_m);
+    return ret;
+}
+
+// FIXME
+// std::unique_ptr<LibintEngine> libint2_create_engine(LibintOperator op_rust, size_t max_nprim, int max_l) {
+//     const auto op_libint = convert_operator_rust_to_cxx(op_rust);
+//     auto engine = Engine(op_libint, max_nprim, max_l, 0);
+//     return std::make_unique<LibintEngine>(std::move(engine));
+// }

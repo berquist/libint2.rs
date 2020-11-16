@@ -204,6 +204,7 @@ mod ffi {
 
     extern "C++" {
         include!("libint2/include/libint2_wrapper.hpp");
+
         fn libint2_init();
         fn libint2_finalize();
         fn libint2_test_c_api(
@@ -220,6 +221,9 @@ mod ffi {
             C: &Vec<f64>,
             D: &Vec<f64>,
         );
+
+        // type LibintEngine;
+        // fn libint2_create_engine(op: LibintOperator, max_nprim: usize, max_l: i32) -> UniquePtr<LibintEngine>;
     }
 }
 
