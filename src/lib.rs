@@ -143,7 +143,7 @@ mod ffi {
         StgTimesCoulomb,
     }
 
-    extern "C++" {
+    unsafe extern "C++" {
         include!("libint2/include/libint2_wrapper.hpp");
 
         fn libint2_init();
