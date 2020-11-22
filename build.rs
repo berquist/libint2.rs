@@ -32,6 +32,7 @@ fn main() {
         .header("/usr/include/libint2.h")
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
         .generate_comments(true)
+        .derive_default(true)
         .generate()
         .expect("Unable to generate bindings");
     bindings_libint2
