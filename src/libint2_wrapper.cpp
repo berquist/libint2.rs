@@ -278,21 +278,20 @@ void libint2_test_c_api(int am1, int am2, int am3, int am4, double alpha1, doubl
     finalize_c_api();
 }
 
-double libint2_calc_boys_reference_single(double T, unsigned int m) {
+double libint2_calc_boys_reference_single(double T, size_t m) {
     const auto instance = libint2::FmEval_Reference<double>();
     return instance.eval(T, m);
 }
 
-std::vector<double> libint2_calc_boys_chebyshev7(double T, unsigned int max_m) {
+std::unique_ptr<std::vector<double>> libint2_calc_boys_chebyshev7(double T, size_t max_m) {
     std::vector<double> ret(max_m + 1);
     const auto instance = libint2::FmEval_Chebyshev7<double>::instance(max_m);
     instance->eval(ret.data(), T, max_m);
-    return ret;
+    return std::make_unique<std::vector<double>>(std::move(ret));
 }
 
-// FIXME
-// std::unique_ptr<LibintEngine> libint2_create_engine(LibintOperator op_rust, size_t max_nprim, int max_l) {
-//     const auto op_libint = convert_operator_rust_to_cxx(op_rust);
-//     auto engine = Engine(op_libint, max_nprim, max_l, 0);
-//     return std::make_unique<LibintEngine>(std::move(engine));
-// }
+std::unique_ptr<libint2::Engine> libint2_create_engine(LibintOperator op_rust, size_t max_nprim, int max_l) {
+    const auto op_libint = convert_operator_rust_to_cxx(op_rust);
+    auto engine = libint2::Engine(op_libint, max_nprim, max_l, 0);
+    return std::make_unique<libint2::Engine>(std::move(engine));
+}

@@ -1,14 +1,17 @@
 use std::f64::consts::PI;
 
-#[allow(dead_code)]
-#[allow(non_camel_case_types)]
-#[allow(non_snake_case)]
-#[allow(non_upper_case_globals)]
-#[allow(unused_variables)]
+#[allow(
+    dead_code,
+    non_camel_case_types,
+    non_snake_case,
+    non_upper_case_globals,
+    unused_variables
+)]
 mod ffi_bindgen {
     include!(concat!(env!("OUT_DIR"), "/bindings_libint2.rs"));
 }
 
+#[allow(dead_code, unused_variables)]
 fn compute_eri(
     am1: i32,
     am2: i32,
@@ -173,6 +176,9 @@ mod ffi {
             D: &Vec<f64>,
         );
 
+        fn libint2_calc_boys_reference_single(T: f64, m: usize) -> f64;
+        fn libint2_calc_boys_chebyshev7(T: f64, max_m: usize) -> UniquePtr<CxxVector<f64>>;
+
         fn libint2_create_engine(
             op: LibintOperator,
             max_nprim: usize,
@@ -187,17 +193,6 @@ mod ffi {
 mod tests {
     use super::*;
     // use std::cmp;
-
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-
-    // #[test]
-    // fn c_api() {}
-
-    #[test]
-    fn test_calc_f() {}
 
     #[test]
     fn test_c_api() {
@@ -261,5 +256,16 @@ mod tests {
         // let engine = create_engine(Operator::Coulomb, 1, max_am);
         // let result = engine.compute(&shls);
         ffi::libint2_finalize();
+    }
+
+    #[test]
+    fn test_calc_boys() {
+        println!("{}", ffi::libint2_calc_boys_reference_single(2.0, 2));
+        println!(
+            "{:#?}",
+            ffi::libint2_calc_boys_chebyshev7(2.0, 2)
+                .iter()
+                .collect::<Vec<_>>()
+        );
     }
 }
