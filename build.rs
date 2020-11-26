@@ -1,6 +1,7 @@
 use bindgen;
+use cxx_build::CFG;
 use std::env;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 fn main() {
     println!("cargo:rustc-link-search=/usr/lib");
@@ -8,11 +9,12 @@ fn main() {
 
     // Binding to parts of the C++ API.
     //
+    CFG.exported_header_dirs
+        .push(Path::new("/usr/include/eigen3"));
     cxx_build::bridge("src/lib.rs")
         .file("src/libint2_c.cpp")
         .file("src/libint2_wrapper.cpp")
         .flag_if_supported("-std=c++14")
-        .include("/usr/include/eigen3")
         .compile("libint2");
 
     println!("cargo:rerun-if-changed=src/lib.rs");
@@ -32,6 +34,7 @@ fn main() {
         .header("/usr/include/libint2.h")
         .parse_callbacks(Box::new(bindgen::CargoCallbacks))
         .generate_comments(true)
+        .derive_default(true)
         .generate()
         .expect("Unable to generate bindings");
     bindings_libint2

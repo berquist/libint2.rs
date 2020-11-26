@@ -4,10 +4,11 @@ version = "0.1.0"
 authors = ["Eric Berquist <eric.berquist@gmail.com>"]
 edition = "2018"
 build = "build.rs"
+links = "libint2"
 
 [dependencies]
-cxx = "0.5"
+cxx = "1.0.2"
 
 [build-dependencies]
 bindgen = "0.55"
-cxx-build = "0.5"
+cxx-build = "1.0.2"

@@ -1,10 +1,10 @@
 #ifndef _LIBINT2_WRAPPER_HPP
 #define _LIBINT2_WRAPPER_HPP
 
-#include "cxx.h"
 #include <memory>
 #include <libint2/engine.h>
 #include "libint2/src/lib.rs.h"
+#include "rust/cxx.h"
 
 void libint2_init();
 void libint2_finalize();
