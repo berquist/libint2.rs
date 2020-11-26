@@ -144,6 +144,11 @@ mod ffi {
     }
 
     unsafe extern "C++" {
+        include!("/usr/include/libint2/engine.h");
+
+        #[namespace = "libint2"]
+        type Engine;
+
         include!("libint2/include/libint2_wrapper.hpp");
 
         fn libint2_init();
@@ -163,8 +168,11 @@ mod ffi {
             D: &Vec<f64>,
         );
 
-        // type LibintEngine;
-        // fn libint2_create_engine(op: LibintOperator, max_nprim: usize, max_l: i32) -> UniquePtr<LibintEngine>;
+        fn libint2_create_engine(
+            op: LibintOperator,
+            max_nprim: usize,
+            max_l: i32,
+        ) -> UniquePtr<Engine>;
     }
 }
 
